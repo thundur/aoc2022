@@ -4,6 +4,7 @@ import org.mayaxatl.aoc2022.Day;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Component
+@Profile("done")
 public class Day7 implements Day {
 
   private static final Logger LOG = LoggerFactory.getLogger(Day7.class);
