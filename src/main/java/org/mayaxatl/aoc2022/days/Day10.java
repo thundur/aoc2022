@@ -4,7 +4,6 @@ import org.mayaxatl.aoc2022.Day;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
@@ -17,16 +16,15 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 @Component
-@Profile("done")
+//@Profile("done")
 public class Day10 implements Day {
 
   private static final Logger LOG = LoggerFactory.getLogger(Day10.class);
 
-
   private final List<Instruction> instructions;
 
-  public Day10(@Value("classpath:day10.txt") Resource knots) throws IOException {
-    instructions = Files.readAllLines(knots.getFile().toPath())
+  public Day10(@Value("classpath:day10.txt") Resource code) throws IOException {
+    instructions = Files.readAllLines(code.getFile().toPath())
         .stream()
         .map(Instruction::parse)
         .flatMap(this::addNoopForAddX)
@@ -37,13 +35,14 @@ public class Day10 implements Day {
   public void part1() {
     int registerX = 1;
     int sumOfSignalStrengths = 0;
-    for(var i = 0; i < instructions.size(); i++) {
-      int cycle = i + 1;
+    int cycle = 0;
+    for(Instruction instruction : instructions) {
+      cycle++;
       if((cycle + 20) % 40 == 0) {
         sumOfSignalStrengths += cycle * registerX;
       }
-      if(instructions.get(i).operation == Operation.addx) {
-        registerX += instructions.get(i).number;
+      if(instruction.operation == Operation.addx) {
+        registerX += instruction.number;
       }
     }
     LOG.info("part 1: {}", sumOfSignalStrengths);
@@ -53,15 +52,17 @@ public class Day10 implements Day {
   public void part2() {
     int registerX = 1;
     StringBuilder result = new StringBuilder("\n");
-    for(var pixelPosition = 0; pixelPosition < instructions.size(); pixelPosition++) {
-      int cycle = pixelPosition + 1;
+    int cycle = 0;
+    for(Instruction instruction : instructions) {
+      cycle++;
+      int pixelPosition  = cycle - 1;
       if(List.of(registerX, registerX - 1, registerX + 1).contains(pixelPosition % 40)) {
         result.append('#');
       } else {
         result.append('.');
       }
-      if(instructions.get(pixelPosition).operation == Operation.addx) {
-        registerX += instructions.get(pixelPosition).number;
+      if(instruction.operation == Operation.addx) {
+        registerX += instruction.number;
       }
       if(cycle % 40 == 0) {
         result.append('\n');
